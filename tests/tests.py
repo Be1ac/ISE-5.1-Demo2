@@ -21,16 +21,47 @@ def test_button_increments_counter():
     assert at.session_state.count == 2
 
 def test_button_decrements_counter():
-    # TODO test that the decrement button works
-    pass
+    """Test that the decrement button works correctly."""
+    # We start by initializing the app state.
+    at = AppTest.from_file("app.py").run()
+
+    # TEACHING MOMENT: We manually set the state to 5. 
+    # This 'setup' phase ensures the test is predictable.
+    at.session_state.count = 5
+
+    # We find the button by its unique 'key'. 
+    # Calling .click() simulates the user action, and .run() processes the logic in app.py.
+    at.button(key="decrement").click().run()
+
+    # ASSERTION: We verify the result. If count isn't 4, the test fails.
+    assert at.session_state.count == 4
 
 def test_button_increments_counter_ten_x():
-    # TODO test that the increment button works in ten_x mode
-    pass
+    """Test that the increment button works in 'ten_x' mode."""
+    at = AppTest.from_file("app.py").run()
+
+    at.session_state.count = 10
+    # TEACHING MOMENT: We must simulate checking the 'ten_x' checkbox.
+    # Integration tests must account for all dependencies of a feature.
+    at.checkbox(key="ten_x").check().run()
+
+    at.button(key="increment").click().run()
+
+    # If the logic in app.py is correct, 10 + 10 should be 20.
+    assert at.session_state.count == 20
 
 def test_button_decrements_counter_ten_x():
-    # TODO test that the decrement button works in ten_x mode
-    pass
+    """Test that the decrement button works in 'ten_x' mode."""
+    at = AppTest.from_file("app.py").run()
+
+    at.session_state.count = 100
+    # We activate the 10x multiplier via the checkbox.
+    at.checkbox(key="ten_x").check().run()
+
+    at.button(key="decrement").click().run()
+
+    # Verification: 100 - 10 = 90.
+    assert at.session_state.count == 90
 
 def test_output_text_correct():
     """Test that the text shows the correct value."""
